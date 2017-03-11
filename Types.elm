@@ -29,7 +29,6 @@ type TacoUpdate
 
 type alias Log =
     { id : String
-    , text : String
-    , created_at : String
+    , title : String
     }
 

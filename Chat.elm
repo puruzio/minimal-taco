@@ -46,10 +46,9 @@ send msg =
 
 logDecoder : JD.Decoder Log
 logDecoder =
-    JD.map3 Log
+    JD.map2 Log
         (field "id" JD.string)
-        (field "text" JD.string)
-        (field "created_at" JD.string)
+        (field "title" JD.string)
 
 
 hnTopStories : String
@@ -138,7 +137,7 @@ initModel taco =
                     }
 
 
-        cmd =  Http.send FetchHNTopStories request
+        cmd =  (send ChannelJoinToggle)
         -- cmd = send (ChannelJoinToggle startModel) -- Http.send FetchHNTopStories request
             -- if taco.chatChannel /= "" then
                 -- Cmd.batch
@@ -225,7 +224,7 @@ update msg model =
 
         ChannelJoinToggle ->
             let
-                _ = Debug.log "test" "print"
+                _ = Debug.log "test" "if it reached this point, it means Chat.init is reaching Main.elm through Router.elm"
             in
                 ( model, Cmd.none, NoUpdate )
 
@@ -253,9 +252,9 @@ listItem : Log -> Html Msg
 listItem log =
     Lists.li [Lists.withSubtitle]
         [ Lists.content []
-          [ text (log.text) 
+          [ text (log.title) 
         
-            , Lists.subtitle [] [ text (log.created_at) ]
+            , Lists.subtitle [] [ text log.id ]
           ]
         ]
 

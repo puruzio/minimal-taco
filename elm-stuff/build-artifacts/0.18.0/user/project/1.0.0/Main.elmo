@@ -14,13 +14,12 @@ var _user$project$Main$updateTaco = F2(
 				return taco;
 		}
 	});
-var _user$project$Main$hnTopStories = '\r\n    {\r\n        logs {\r\n          id\r\n          text\r\n          created_at\r\n      }\r\n    }\r\n    ';
-var _user$project$Main$logDecoder = A4(
-	_elm_lang$core$Json_Decode$map3,
+var _user$project$Main$hnTopStories = '\n    {\n      hn {\n        topStories {\n          id\n        }\n      }\n    }\n    ';
+var _user$project$Main$logDecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
 	_user$project$Types$Log,
 	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'text', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'created_at', _elm_lang$core$Json_Decode$string));
+	A2(_elm_lang$core$Json_Decode$field, 'title', _elm_lang$core$Json_Decode$string));
 var _user$project$Main$AppModel = F3(
 	function (a, b, c) {
 		return {appState: a, location: b, currentTime: c};
@@ -88,8 +87,8 @@ var _user$project$Main$updateRouter = F2(
 			return _elm_lang$core$Native_Utils.crashCase(
 				'Main',
 				{
-					start: {line: 258, column: 5},
-					end: {line: 272, column: 115}
+					start: {line: 257, column: 5},
+					end: {line: 271, column: 115}
 				},
 				_p2)('Ooops. We got a sub-component message even though it wasn\'t supposed to be initialized??');
 		}
@@ -102,8 +101,8 @@ var _user$project$Main$updateLogData = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'Main',
 					{
-						start: {line: 276, column: 5},
-						end: {line: 306, column: 32}
+						start: {line: 275, column: 5},
+						end: {line: 305, column: 32}
 					},
 					_p5)('OMG CANT EVEN DOWNLOAD.');
 			case 'Success':
@@ -245,8 +244,12 @@ var _user$project$Main$init = F2(
 				_0: 'data',
 				_1: {
 					ctor: '::',
-					_0: 'logs',
-					_1: {ctor: '[]'}
+					_0: 'hn',
+					_1: {
+						ctor: '::',
+						_0: 'topStories',
+						_1: {ctor: '[]'}
+					}
 				}
 			},
 			_elm_lang$core$Json_Decode$list(_user$project$Main$logDecoder));
@@ -260,7 +263,7 @@ var _user$project$Main$init = F2(
 			_0: startModel,
 			_1: A3(
 				_ohanhi$elm_web_data$WebData_Http$get,
-				A2(_elm_lang$core$Basics_ops['++'], 'http://lwvpweact001:4000/graphql?query=', encoded),
+				A2(_elm_lang$core$Basics_ops['++'], 'https://www.graphqlhub.com/graphql?query=', encoded),
 				_user$project$Main$HandleLogDataResponse,
 				decoder)
 		};

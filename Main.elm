@@ -108,21 +108,20 @@ subscriptions model =
 
 logDecoder : JD.Decoder Log
 logDecoder =
-    JD.map3 Log
+    JD.map2 Log
         (field "id" JD.string)
-        (field "text" JD.string)
-        (field "created_at" JD.string)
+        (field "title" JD.string)
 
 hnTopStories : String
 hnTopStories =
-    """\x0D
-    {\x0D
-        logs {\x0D
-          id\x0D
-          text\x0D
-          created_at\x0D
-      }\x0D
-    }\x0D
+    """
+    {
+      hn {
+        topStories {
+          id
+        }
+      }
+    }
     """
 
 init : Flags -> Location -> ( AppModel, Cmd Msg )
@@ -142,7 +141,7 @@ init flags location =
             Http.encodeUri hnTopStories
 
         decoder =
-            JD.at [ "data", "logs" ] <|
+            JD.at [  "data", "hn", "topStories"] <|
                 JD.list logDecoder
         
         startModel = {
@@ -162,7 +161,7 @@ init flags location =
         (  startModel
         -- (  Maybe.withDefault newLoginModel savedModel
         -- , Cmd.none
-         , Http2.get ("http://lwvpweact001:4000/graphql?query=" ++ encoded) HandleLogDataResponse decoder
+         , Http2.get ("https://www.graphqlhub.com/graphql?query=" ++ encoded) HandleLogDataResponse decoder
         -- , Http2.get ("http://localhost:4000/graphql?query=" ++ encoded) HandleLogDataResponse decoder
           -- , Cmd.map HttpModuleMsg httpAct
         --   Cmd.batch
