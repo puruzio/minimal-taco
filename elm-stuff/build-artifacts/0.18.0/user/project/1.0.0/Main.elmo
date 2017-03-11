@@ -1,0 +1,278 @@
+var _user$project$Main$updateTaco = F2(
+	function (taco, tacoUpdate) {
+		var _p0 = tacoUpdate;
+		switch (_p0.ctor) {
+			case 'UpdateTime':
+				return _elm_lang$core$Native_Utils.update(
+					taco,
+					{currentTime: _p0._0});
+			case 'UpdateLogData':
+				return _elm_lang$core$Native_Utils.update(
+					taco,
+					{logdata: _p0._0});
+			default:
+				return taco;
+		}
+	});
+var _user$project$Main$hnTopStories = '\r\n    {\r\n        logs {\r\n          id\r\n          text\r\n          created_at\r\n      }\r\n    }\r\n    ';
+var _user$project$Main$logDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Types$Log,
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'text', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'created_at', _elm_lang$core$Json_Decode$string));
+var _user$project$Main$AppModel = F3(
+	function (a, b, c) {
+		return {appState: a, location: b, currentTime: c};
+	});
+var _user$project$Main$Ready = F2(
+	function (a, b) {
+		return {ctor: 'Ready', _0: a, _1: b};
+	});
+var _user$project$Main$NotReady = function (a) {
+	return {ctor: 'NotReady', _0: a};
+};
+var _user$project$Main$updateTime = F2(
+	function (model, time) {
+		var _p1 = model.appState;
+		if (_p1.ctor === 'NotReady') {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						appState: _user$project$Main$NotReady(time)
+					}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						appState: A2(
+							_user$project$Main$Ready,
+							A2(
+								_user$project$Main$updateTaco,
+								_p1._0,
+								_user$project$Types$UpdateTime(time)),
+							_p1._1)
+					}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		}
+	});
+var _user$project$Main$RouterMsg = function (a) {
+	return {ctor: 'RouterMsg', _0: a};
+};
+var _user$project$Main$updateRouter = F2(
+	function (model, routerMsg) {
+		var _p2 = model.appState;
+		if (_p2.ctor === 'Ready') {
+			var _p3 = A2(_user$project$Router$update, routerMsg, _p2._1);
+			var nextRouterModel = _p3._0;
+			var routerCmd = _p3._1;
+			var tacoUpdate = _p3._2;
+			var nextTaco = A2(_user$project$Main$updateTaco, _p2._0, tacoUpdate);
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						appState: A2(_user$project$Main$Ready, nextTaco, nextRouterModel)
+					}),
+				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$RouterMsg, routerCmd)
+			};
+		} else {
+			return _elm_lang$core$Native_Utils.crashCase(
+				'Main',
+				{
+					start: {line: 258, column: 5},
+					end: {line: 272, column: 115}
+				},
+				_p2)('Ooops. We got a sub-component message even though it wasn\'t supposed to be initialized??');
+		}
+	});
+var _user$project$Main$updateLogData = F2(
+	function (model, webData) {
+		var _p5 = webData;
+		switch (_p5.ctor) {
+			case 'Failure':
+				return _elm_lang$core$Native_Utils.crashCase(
+					'Main',
+					{
+						start: {line: 276, column: 5},
+						end: {line: 306, column: 32}
+					},
+					_p5)('OMG CANT EVEN DOWNLOAD.');
+			case 'Success':
+				var _p10 = _p5._0;
+				var _p7 = model.appState;
+				if (_p7.ctor === 'NotReady') {
+					var initTaco = {currentTime: _p7._0, logdata: _p10};
+					var _p8 = A2(_user$project$Router$init, initTaco, model.location);
+					var initRouterModel = _p8._0;
+					var routerCmd = _p8._1;
+					var _p9 = A2(
+						_elm_lang$core$Debug$log,
+						'Main updateLogData Success',
+						_elm_lang$core$Basics$toString(routerCmd));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								appState: A2(_user$project$Main$Ready, initTaco, initRouterModel)
+							}),
+						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$RouterMsg, routerCmd)
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								appState: A2(
+									_user$project$Main$Ready,
+									A2(
+										_user$project$Main$updateTaco,
+										_p7._0,
+										_user$project$Types$UpdateLogData(_p10)),
+									_p7._1)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p11 = msg;
+		switch (_p11.ctor) {
+			case 'HandleLogDataResponse':
+				return A2(_user$project$Main$updateLogData, model, _p11._0);
+			case 'UrlChange':
+				var _p12 = _p11._0;
+				return A2(
+					_user$project$Main$updateRouter,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{location: _p12}),
+					_user$project$Router$UrlChange(_p12));
+			case 'RouterMsg':
+				return A2(_user$project$Main$updateRouter, model, _p11._0);
+			default:
+				return A2(_user$project$Main$updateTime, model, _p11._0);
+		}
+	});
+var _user$project$Main$updateWithStorage = F2(
+	function (msg, model) {
+		var _p13 = A2(_user$project$Main$update, msg, model);
+		var newModel = _p13._0;
+		var cmds = _p13._1;
+		var _p14 = model.appState;
+		if (_p14.ctor === 'NotReady') {
+			return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: newModel,
+				_1: _elm_lang$core$Platform_Cmd$batch(
+					{
+						ctor: '::',
+						_0: cmds,
+						_1: {ctor: '[]'}
+					})
+			};
+		}
+	});
+var _user$project$Main$view = function (model) {
+	var _p15 = model.appState;
+	if (_p15.ctor === 'Ready') {
+		return A2(
+			_elm_lang$html$Html$map,
+			_user$project$Main$RouterMsg,
+			A2(_user$project$Router$view, _p15._0, _p15._1));
+	} else {
+		return _elm_lang$html$Html$text('Loading');
+	}
+};
+var _user$project$Main$TimeChange = function (a) {
+	return {ctor: 'TimeChange', _0: a};
+};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: function () {
+				var _p16 = model.appState;
+				if (_p16.ctor === 'NotReady') {
+					return _elm_lang$core$Platform_Sub$none;
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Sub$map,
+						_user$project$Main$RouterMsg,
+						_user$project$Router$subscriptions(_p16._1));
+				}
+			}(),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Main$TimeChange),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
+var _user$project$Main$HandleLogDataResponse = function (a) {
+	return {ctor: 'HandleLogDataResponse', _0: a};
+};
+var _user$project$Main$init = F2(
+	function (flags, location) {
+		var startModel = {
+			appState: _user$project$Main$NotReady(flags.currentTime),
+			location: location,
+			currentTime: flags.currentTime
+		};
+		var decoder = A2(
+			_elm_lang$core$Json_Decode$at,
+			{
+				ctor: '::',
+				_0: 'data',
+				_1: {
+					ctor: '::',
+					_0: 'logs',
+					_1: {ctor: '[]'}
+				}
+			},
+			_elm_lang$core$Json_Decode$list(_user$project$Main$logDecoder));
+		var encoded = _elm_lang$http$Http$encodeUri(_user$project$Main$hnTopStories);
+		var _p17 = A2(
+			_elm_lang$core$Debug$log,
+			'inside Main.elm init',
+			_elm_lang$core$Basics$toString(flags));
+		return {
+			ctor: '_Tuple2',
+			_0: startModel,
+			_1: A3(
+				_ohanhi$elm_web_data$WebData_Http$get,
+				A2(_elm_lang$core$Basics_ops['++'], 'http://lwvpweact001:4000/graphql?query=', encoded),
+				_user$project$Main$HandleLogDataResponse,
+				decoder)
+		};
+	});
+var _user$project$Main$main = A2(
+	_elm_lang$navigation$Navigation$programWithFlags,
+	_user$project$Main$UrlChange,
+	{init: _user$project$Main$init, update: _user$project$Main$updateWithStorage, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (currentTime) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{currentTime: currentTime});
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'currentTime', _elm_lang$core$Json_Decode$float)));

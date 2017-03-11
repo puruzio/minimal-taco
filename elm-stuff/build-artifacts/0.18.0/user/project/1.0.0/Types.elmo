@@ -1,0 +1,18 @@
+var _user$project$Types$Taco = F2(
+	function (a, b) {
+		return {currentTime: a, logdata: b};
+	});
+var _user$project$Types$Flags = function (a) {
+	return {currentTime: a};
+};
+var _user$project$Types$Log = F3(
+	function (a, b, c) {
+		return {id: a, text: b, created_at: c};
+	});
+var _user$project$Types$UpdateLogData = function (a) {
+	return {ctor: 'UpdateLogData', _0: a};
+};
+var _user$project$Types$UpdateTime = function (a) {
+	return {ctor: 'UpdateTime', _0: a};
+};
+var _user$project$Types$NoUpdate = {ctor: 'NoUpdate'};

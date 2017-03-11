@@ -1,0 +1,218 @@
+var _ohanhi$elm_web_data$WebData_Http$queryEscape = function (string) {
+	return A2(
+		_elm_lang$core$String$join,
+		'+',
+		A2(
+			_elm_lang$core$String$split,
+			'%20',
+			_elm_lang$http$Http$encodeUri(string)));
+};
+var _ohanhi$elm_web_data$WebData_Http$queryPair = function (_p0) {
+	var _p1 = _p0;
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_ohanhi$elm_web_data$WebData_Http$queryEscape(_p1._0),
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'=',
+			_ohanhi$elm_web_data$WebData_Http$queryEscape(_p1._1)));
+};
+var _ohanhi$elm_web_data$WebData_Http$url = F2(
+	function (baseUrl, args) {
+		var _p2 = args;
+		if (_p2.ctor === '[]') {
+			return baseUrl;
+		} else {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				baseUrl,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'?',
+					A2(
+						_elm_lang$core$String$join,
+						'&',
+						A2(_elm_lang$core$List$map, _ohanhi$elm_web_data$WebData_Http$queryPair, args))));
+		}
+	});
+var _ohanhi$elm_web_data$WebData_Http$request = F5(
+	function (method, headers, url, successDecoder, body) {
+		return _elm_lang$http$Http$request(
+			{
+				method: method,
+				headers: headers,
+				url: url,
+				body: body,
+				expect: _elm_lang$http$Http$expectJson(successDecoder),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _ohanhi$elm_web_data$WebData_Http$getRequest = F3(
+	function (headers, url, decoder) {
+		return A5(_ohanhi$elm_web_data$WebData_Http$request, 'GET', headers, url, decoder, _elm_lang$http$Http$emptyBody);
+	});
+var _ohanhi$elm_web_data$WebData_Http$toTask = function (request) {
+	return A2(
+		_elm_lang$core$Task$onError,
+		function (_p3) {
+			return _elm_lang$core$Task$succeed(
+				_ohanhi$elm_web_data$WebData$Failure(_p3));
+		},
+		A2(
+			_elm_lang$core$Task$map,
+			_ohanhi$elm_web_data$WebData$Success,
+			_elm_lang$http$Http$toTask(request)));
+};
+var _ohanhi$elm_web_data$WebData_Http$getWithCacheTask = F2(
+	function (url, decoder) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A3(
+				_ohanhi$elm_web_data$WebData_Http$getRequest,
+				{ctor: '[]'},
+				url,
+				decoder));
+	});
+var _ohanhi$elm_web_data$WebData_Http$postTask = F3(
+	function (url, decoder, body) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'POST',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$putTask = F3(
+	function (url, decoder, body) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'PUT',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$patchTask = F3(
+	function (url, decoder, body) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'PATCH',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$deleteTask = F3(
+	function (url, decoder, body) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'DELETE',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$toCmd = function (tagger) {
+	return _elm_lang$http$Http$send(
+		function (_p4) {
+			return tagger(
+				_ohanhi$elm_web_data$WebData$fromResult(_p4));
+		});
+};
+var _ohanhi$elm_web_data$WebData_Http$getWithCache = F3(
+	function (url, tagger, decoder) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A3(
+				_ohanhi$elm_web_data$WebData_Http$getRequest,
+				{ctor: '[]'},
+				url,
+				decoder));
+	});
+var _ohanhi$elm_web_data$WebData_Http$post = F4(
+	function (url, tagger, decoder, body) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'POST',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$put = F4(
+	function (url, tagger, decoder, body) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'PUT',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$patch = F4(
+	function (url, tagger, decoder, body) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'PATCH',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$delete = F4(
+	function (url, tagger, decoder, body) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A5(
+				_ohanhi$elm_web_data$WebData_Http$request,
+				'DELETE',
+				{ctor: '[]'},
+				url,
+				decoder,
+				_elm_lang$http$Http$jsonBody(body)));
+	});
+var _ohanhi$elm_web_data$WebData_Http$noCache = A2(_elm_lang$http$Http$header, 'Cache-Control', 'no-store, must-revalidate, no-cache, max-age=0');
+var _ohanhi$elm_web_data$WebData_Http$getTask = F2(
+	function (url, decoder) {
+		return _ohanhi$elm_web_data$WebData_Http$toTask(
+			A3(
+				_ohanhi$elm_web_data$WebData_Http$getRequest,
+				{
+					ctor: '::',
+					_0: _ohanhi$elm_web_data$WebData_Http$noCache,
+					_1: {ctor: '[]'}
+				},
+				url,
+				decoder));
+	});
+var _ohanhi$elm_web_data$WebData_Http$get = F3(
+	function (url, tagger, decoder) {
+		return A2(
+			_ohanhi$elm_web_data$WebData_Http$toCmd,
+			tagger,
+			A3(
+				_ohanhi$elm_web_data$WebData_Http$getRequest,
+				{
+					ctor: '::',
+					_0: _ohanhi$elm_web_data$WebData_Http$noCache,
+					_1: {ctor: '[]'}
+				},
+				url,
+				decoder));
+	});

@@ -1,0 +1,13 @@
+var _user$project$Helpers$reverseRoute = function (route) {
+	var _p0 = route;
+	return '#/';
+};
+var _user$project$Helpers$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Helpers$ChatRoute = {ctor: 'ChatRoute'};
+var _user$project$Helpers$routeParser = A2(_evancz$url_parser$UrlParser$map, _user$project$Helpers$ChatRoute, _evancz$url_parser$UrlParser$top);
+var _user$project$Helpers$parseLocation = function (location) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		_user$project$Helpers$NotFoundRoute,
+		A2(_evancz$url_parser$UrlParser$parseHash, _user$project$Helpers$routeParser, location));
+};

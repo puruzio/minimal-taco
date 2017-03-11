@@ -1,0 +1,24 @@
+var _ohanhi$elm_web_data$WebData$toMaybe = function (state) {
+	var _p0 = state;
+	if (_p0.ctor === 'Success') {
+		return _elm_lang$core$Maybe$Just(_p0._0);
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _ohanhi$elm_web_data$WebData$Success = function (a) {
+	return {ctor: 'Success', _0: a};
+};
+var _ohanhi$elm_web_data$WebData$Failure = function (a) {
+	return {ctor: 'Failure', _0: a};
+};
+var _ohanhi$elm_web_data$WebData$fromResult = function (result) {
+	var _p1 = result;
+	if (_p1.ctor === 'Err') {
+		return _ohanhi$elm_web_data$WebData$Failure(_p1._0);
+	} else {
+		return _ohanhi$elm_web_data$WebData$Success(_p1._0);
+	}
+};
+var _ohanhi$elm_web_data$WebData$Loading = {ctor: 'Loading'};
+var _ohanhi$elm_web_data$WebData$NotAsked = {ctor: 'NotAsked'};

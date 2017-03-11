@@ -1,0 +1,373 @@
+var _user$project$Chat$buildStyle = function (styleLists) {
+	return _elm_lang$html$Html_Attributes$style(
+		_elm_lang$core$List$concat(styleLists));
+};
+var _user$project$Chat$boldStyle = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+	_1: {ctor: '[]'}
+};
+var _user$project$Chat$renderUser = function (user) {
+	return A2(
+		_debois$elm_mdl$Material_Chip$span,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A3(
+				_debois$elm_mdl$Material_Chip$contact,
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _debois$elm_mdl$Material_Color$background(_debois$elm_mdl$Material_Color$primary),
+					_1: {
+						ctor: '::',
+						_0: _debois$elm_mdl$Material_Color$text(_debois$elm_mdl$Material_Color$white),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A3(
+							_elm_lang$core$String$slice,
+							0,
+							1,
+							_elm_lang$core$String$toUpper(user.name))),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_debois$elm_mdl$Material_Chip$content,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(user.name),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Chat$renderMessage = function (str) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(str),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Chat$listItem = function (log) {
+	return A2(
+		_debois$elm_mdl$Material_List$li,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_List$withSubtitle,
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_debois$elm_mdl$Material_List$content,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(log.text),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_debois$elm_mdl$Material_List$subtitle,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(log.created_at),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Chat$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Chat$hnTopStories = '\r\n    {\r\n        logs {\r\n          id\r\n          text\r\n          created_at\r\n      }\r\n    }\r\n    ';
+var _user$project$Chat$logDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Types$Log,
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'text', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'created_at', _elm_lang$core$Json_Decode$string));
+var _user$project$Chat$request = function () {
+	var decoder = A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'data',
+			_1: {
+				ctor: '::',
+				_0: 'logs',
+				_1: {ctor: '[]'}
+			}
+		},
+		_elm_lang$core$Json_Decode$list(_user$project$Chat$logDecoder));
+	var encoded = _elm_lang$http$Http$encodeUri(_user$project$Chat$hnTopStories);
+	return A2(
+		_elm_lang$http$Http$get,
+		A2(_elm_lang$core$Basics_ops['++'], 'http://lwvpweact001:4000/graphql?query=', encoded),
+		decoder);
+}();
+var _user$project$Chat$send = function (msg) {
+	return A2(
+		_elm_lang$core$Task$perform,
+		_elm_lang$core$Basics$identity,
+		_elm_lang$core$Task$succeed(msg));
+};
+var _user$project$Chat$User = function (a) {
+	return {name: a};
+};
+var _user$project$Chat$UserPresence = F3(
+	function (a, b, c) {
+		return {online_at: a, device: b, name: c};
+	});
+var _user$project$Chat$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {newMessage: a, users: b, mdl: c, count: d, if_channeljoined: e, response: f, logs: g};
+	});
+var _user$project$Chat$ChatMessage = F3(
+	function (a, b, c) {
+		return {username: a, body: b, timestamp: c};
+	});
+var _user$project$Chat$chatMessageDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Chat$ChatMessage,
+	_elm_lang$core$Json_Decode$oneOf(
+		{
+			ctor: '::',
+			_0: A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$core$Json_Decode$succeed('anonymous'),
+				_1: {ctor: '[]'}
+			}
+		}),
+	A2(_elm_lang$core$Json_Decode$field, 'body', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'timestamp', _elm_lang$core$Json_Decode$string));
+var _user$project$Chat$NoOp = {ctor: 'NoOp'};
+var _user$project$Chat$Increase = {ctor: 'Increase'};
+var _user$project$Chat$Mdl = function (a) {
+	return {ctor: 'Mdl', _0: a};
+};
+var _user$project$Chat$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'FetchHNTopStories':
+				if (_p0._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple3',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{logs: _p0._0._0, response: 'Alltrans Log>>'}),
+						_1: _elm_lang$core$Platform_Cmd$none,
+						_2: _user$project$Types$NoUpdate
+					};
+				} else {
+					return {
+						ctor: '_Tuple3',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								response: _elm_lang$core$Basics$toString(_p0._0._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none,
+						_2: _user$project$Types$NoUpdate
+					};
+				}
+			case 'ChannelJoinToggle':
+				var _p1 = A2(_elm_lang$core$Debug$log, 'test', 'print');
+				return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$Types$NoUpdate};
+			case 'Mdl':
+				var _p2 = A3(_debois$elm_mdl$Material$update, _user$project$Chat$Mdl, _p0._0, model);
+				var mdl = _p2._0;
+				var command = _p2._1;
+				return {ctor: '_Tuple3', _0: mdl, _1: command, _2: _user$project$Types$NoUpdate};
+			case 'Increase':
+				return {
+					ctor: '_Tuple3',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{count: model.count + 1}),
+					_1: _elm_lang$core$Platform_Cmd$none,
+					_2: _user$project$Types$NoUpdate
+				};
+			default:
+				return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$Types$NoUpdate};
+		}
+	});
+var _user$project$Chat$ChannelJoinToggle = {ctor: 'ChannelJoinToggle'};
+var _user$project$Chat$view = F2(
+	function (taco, model) {
+		var items = A2(_elm_lang$core$List$map, _user$project$Chat$listItem, model.logs);
+		var logList = A2(
+			_debois$elm_mdl$Material_List$ul,
+			{
+				ctor: '::',
+				_0: A2(_debois$elm_mdl$Material_Options$css, 'margin', '0'),
+				_1: {
+					ctor: '::',
+					_0: A2(_debois$elm_mdl$Material_Options$css, 'padding', '0'),
+					_1: {ctor: '[]'}
+				}
+			},
+			items);
+		return _debois$elm_mdl$Material_Scheme$top(
+			A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'border', _1: 'solid'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: logList,
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$h4,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Channels:'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A5(
+								_debois$elm_mdl$Material_Toggles$switch,
+								_user$project$Chat$Mdl,
+								{
+									ctor: '::',
+									_0: 0,
+									_1: {ctor: '[]'}
+								},
+								model.mdl,
+								{
+									ctor: '::',
+									_0: _debois$elm_mdl$Material_Options$onToggle(_user$project$Chat$ChannelJoinToggle),
+									_1: {
+										ctor: '::',
+										_0: _debois$elm_mdl$Material_Toggles$ripple,
+										_1: {
+											ctor: '::',
+											_0: _debois$elm_mdl$Material_Toggles$value(model.if_channeljoined),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Join'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$br,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$h4,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Presence users:'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$ul,
+											{ctor: '[]'},
+											function (_p3) {
+												return _elm_lang$core$List$reverse(
+													A2(_elm_lang$core$List$map, _user$project$Chat$renderUser, _p3));
+											}(model.users)),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$br,
+												{ctor: '[]'},
+												{ctor: '[]'}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$h4,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Message:'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}));
+	});
+var _user$project$Chat$FetchHNTopStories = function (a) {
+	return {ctor: 'FetchHNTopStories', _0: a};
+};
+var _user$project$Chat$initModel = function (taco) {
+	var cmd = A2(_elm_lang$http$Http$send, _user$project$Chat$FetchHNTopStories, _user$project$Chat$request);
+	var _p4 = A2(
+		_elm_lang$core$Debug$log,
+		'Chat initmodel chatModel : ',
+		_elm_lang$core$Basics$toString(cmd));
+	var startModel = {
+		newMessage: '',
+		users: {ctor: '[]'},
+		mdl: _debois$elm_mdl$Material$model,
+		count: 0,
+		if_channeljoined: false,
+		response: 'Waiting for a response...',
+		logs: {ctor: '[]'}
+	};
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		startModel,
+		{
+			ctor: '::',
+			_0: cmd,
+			_1: {ctor: '[]'}
+		});
+};

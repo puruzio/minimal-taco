@@ -1,0 +1,193 @@
+var _user$project$Router$Model = F2(
+	function (a, b) {
+		return {chatModel: a, route: b};
+	});
+var _user$project$Router$ChatMsg = function (a) {
+	return {ctor: 'ChatMsg', _0: a};
+};
+var _user$project$Router$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Router$ChatMsg,
+				_user$project$Chat$subscriptions(model.chatModel)),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Router$init = F2(
+	function (taco, location) {
+		var _p0 = _user$project$Chat$initModel(taco);
+		var chatModel = _p0._0;
+		var chatCmd = _p0._1;
+		var _p1 = A2(
+			_elm_lang$core$Debug$log,
+			'chatCmd in Router init',
+			_elm_lang$core$Basics$toString(chatCmd));
+		return {
+			ctor: '_Tuple2',
+			_0: {
+				chatModel: chatModel,
+				route: _user$project$Helpers$parseLocation(location)
+			},
+			_1: _elm_lang$core$Platform_Cmd$batch(
+				{
+					ctor: '::',
+					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Router$ChatMsg, chatCmd),
+					_1: {ctor: '[]'}
+				})
+		};
+	});
+var _user$project$Router$updateChat = F2(
+	function (model, chatMsg) {
+		var _p2 = A2(_user$project$Chat$update, chatMsg, model.chatModel);
+		var nextChatModel = _p2._0;
+		var chatCmd = _p2._1;
+		var tacoUpdate = _p2._2;
+		return {
+			ctor: '_Tuple3',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{chatModel: nextChatModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Router$ChatMsg, chatCmd),
+			_2: tacoUpdate
+		};
+	});
+var _user$project$Router$update = F2(
+	function (msg, model) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
+			case 'UrlChange':
+				return {
+					ctor: '_Tuple3',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							route: _user$project$Helpers$parseLocation(_p3._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none,
+					_2: _user$project$Types$NoUpdate
+				};
+			case 'NavigateTo':
+				return {
+					ctor: '_Tuple3',
+					_0: model,
+					_1: _elm_lang$navigation$Navigation$newUrl(
+						_user$project$Helpers$reverseRoute(_p3._0)),
+					_2: _user$project$Types$NoUpdate
+				};
+			default:
+				return A2(_user$project$Router$updateChat, model, _p3._0);
+		}
+	});
+var _user$project$Router$pageView = F2(
+	function (taco, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$Styles$styles(_user$project$Styles$activeView),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: function () {
+					var _p4 = model.route;
+					if (_p4.ctor === 'ChatRoute') {
+						return A2(
+							_elm_lang$html$Html$map,
+							_user$project$Router$ChatMsg,
+							A2(_user$project$Chat$view, taco, model.chatModel));
+					} else {
+						return A2(
+							_elm_lang$html$Html$h1,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('404 :('),
+								_1: {ctor: '[]'}
+							});
+					}
+				}(),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Router$NavigateTo = function (a) {
+	return {ctor: 'NavigateTo', _0: a};
+};
+var _user$project$Router$view = F2(
+	function (taco, model) {
+		var buttonStyles = function (route) {
+			return _elm_lang$core$Native_Utils.eq(model.route, route) ? _user$project$Styles$styles(_user$project$Styles$navigationButtonActive) : _user$project$Styles$styles(_user$project$Styles$navigationButton);
+		};
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$Styles$styles(
+					A2(_elm_lang$core$Basics_ops['++'], _user$project$Styles$appStyles, _user$project$Styles$wrapper)),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$header,
+					{
+						ctor: '::',
+						_0: _user$project$Styles$styles(_user$project$Styles$headerSection),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$p,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(''),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$nav,
+						{
+							ctor: '::',
+							_0: _user$project$Styles$styles(_user$project$Styles$navigationBar),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$Router$NavigateTo(_user$project$Helpers$ChatRoute)),
+									_1: {
+										ctor: '::',
+										_0: buttonStyles(_user$project$Helpers$ChatRoute),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('AlltransLog'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Router$pageView, taco, model),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+var _user$project$Router$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
