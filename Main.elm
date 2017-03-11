@@ -128,15 +128,8 @@ hnTopStories =
 init : Flags -> Location -> ( AppModel, Cmd Msg )
 init flags location =
     let
-        --     ( httpModel, httpAct ) =
-        --         HttpModule.initialModel
-        -- ( ssModel, ssCmd ) =
-        --     (SeatSaver.initialModel (Taco flags.currentTime [] flags.userToken flags.username))
-         
 
-        -- ( chModel, chatCmd ) =
-        --     (Chat.initModel (Taco flags.currentTime [] flags.userToken flags.username))
-        _ = Debug.log "inside Main.elm init" (toString flags)
+        -- _ = Debug.log "inside Main.elm init" (toString flags)
         
         encoded =
             Http.encodeUri hnTopStories
@@ -148,27 +141,12 @@ init flags location =
         startModel = {
             appState = NotReady flags.currentTime
           , location = location
-        --   , seatsaverModel =
-        --         ssModel
-                --(SeatSaver.initialModel flags)
-                --   , httpcommentModel = httpModel
-                --   ,
-                --   , chatModel = (Chat.initModel flags)
-        --   , chatModel = chModel
           , currentTime = flags.currentTime
           }
         
     in
         (  startModel
-        -- (  Maybe.withDefault newLoginModel savedModel
-        -- , Cmd.none
          , Http2.get ("https://www.graphqlhub.com/graphql?query=" ++ encoded) HandleLogDataResponse decoder
-        -- , Http2.get ("http://localhost:4000/graphql?query=" ++ encoded) HandleLogDataResponse decoder
-          -- , Cmd.map HttpModuleMsg httpAct
-        --   Cmd.batch
-        --     [ Cmd.map SeatSaverMsg ssCmd
-        --     , Cmd.map ChatMsg chatCmd
-        --     ]
         )
 
 
@@ -177,10 +155,7 @@ init flags location =
 
 
 type Msg
-    --  = SeatSaverMsg SeatSaver.Msg
-      -- | HttpModuleMsg HttpModule.Msg
-      -- |
-    = --ChatMsg Chat.Msg
+    = 
      HandleLogDataResponse (WebData LogData)
     | UrlChange Location
     | TimeChange Time
@@ -191,42 +166,7 @@ update :  Msg -> AppModel -> ( AppModel, Cmd Msg )
 update  msg model =
 
         case msg of
-            -- SeatSaverMsg subMsg ->
-            --     let
-            --         ( updatedSeatSaverModel, cmd, tacoUpdate ) =
-            --             SeatSaver.update subMsg model.seatsaverModel
-            --     in
-            --         ( { model | seatsaverModel = updatedSeatSaverModel }
-            --         , Cmd.map SeatSaverMsg cmd
-            --         )
-
-            -- HttpModuleMsg subMsg ->
-            --     let
-            --         ( updatedHttpModel, cmd ) =
-            --             HttpModule.update subMsg model.httpcommentModel
-            --     in
-            --         ( { model | httpcommentModel = updatedHttpModel }
-            --         , Cmd.map HttpModuleMsg cmd
-            --         )
-            -- ChatMsg subMsg ->
-            --     let
-            --         ( updatedChatModel, cmd, tacoUpdate ) =
-            --             Chat.update subMsg model.chatModel
-            --     in
-            --         ( { model | chatModel = updatedChatModel }
-            --         , Cmd.map ChatMsg cmd
-            --         )
-            -- ChatMsg subMsg ->
-            --     case model.appState of
-            --         Ready taco routerModel ->
-            --         let
-            --             ( nextRouterModel, routerCmd, tacoUpdate) =
-            --                 Router.update subMsg routerModel
-            --         in
-            --             ( { model | appState = Ready taco nextRouterModel }
-            --             , Cmd.map RouterMsg routerCmd
-            --             )
-
+           
             HandleLogDataResponse webData ->
                 updateLogData model webData
 
@@ -330,10 +270,6 @@ view model =
             Router.view taco routerModel
                 |> Html.map RouterMsg
 
-        -- div []
-        -- [ Html.map ChatMsg (Chat.view model.chatModel)
-        -- , Html.map SeatSaverMsg (SeatSaver.view model.seatsaverModel)
-        --   -- , Html.map HttpModuleMsg (HttpModule.view model.httpcommentModel)
-        -- ]
+
         NotReady _ ->
             text "Loading"

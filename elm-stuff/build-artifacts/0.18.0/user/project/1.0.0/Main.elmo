@@ -87,8 +87,8 @@ var _user$project$Main$updateRouter = F2(
 			return _elm_lang$core$Native_Utils.crashCase(
 				'Main',
 				{
-					start: {line: 258, column: 5},
-					end: {line: 272, column: 115}
+					start: {line: 198, column: 5},
+					end: {line: 212, column: 115}
 				},
 				_p2)('Ooops. We got a sub-component message even though it wasn\'t supposed to be initialized??');
 		}
@@ -101,8 +101,8 @@ var _user$project$Main$updateLogData = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'Main',
 					{
-						start: {line: 276, column: 5},
-						end: {line: 306, column: 32}
+						start: {line: 216, column: 5},
+						end: {line: 246, column: 32}
 					},
 					_p5)('OMG CANT EVEN DOWNLOAD.');
 			case 'Success':
@@ -254,10 +254,6 @@ var _user$project$Main$init = F2(
 			},
 			_elm_lang$core$Json_Decode$list(_user$project$Main$logDecoder));
 		var encoded = _elm_lang$http$Http$encodeUri(_user$project$Main$hnTopStories);
-		var _p17 = A2(
-			_elm_lang$core$Debug$log,
-			'inside Main.elm init',
-			_elm_lang$core$Basics$toString(flags));
 		return {
 			ctor: '_Tuple2',
 			_0: startModel,

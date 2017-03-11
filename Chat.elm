@@ -74,7 +74,6 @@ request =
             JD.at [ "data", "logs" ] <|
                 JD.list logDecoder
     in
-        -- port 3001 is currently pointing to old\finreporting which is alltranslog
         Http.get ("http://lwvpweact001:4000/graphql?query=" ++ encoded) decoder
 
 
@@ -85,19 +84,10 @@ request =
 type Msg
     = 
      FetchHNTopStories (Result Http.Error (List Log))
-      -- ReceiveMessage String
 
-      -- | ReceivePresenceMessage JE.Value
-    -- | ShowJoinedMessage String
-    -- | ShowLeftMessage String
-      -- | ConnectSocket
-      --  | SetUsername String
-    -- | HandlePresenceState JE.Value
-    -- | HandlePresenceDiff JE.Value
     | ChannelJoinToggle
     | Mdl (Material.Msg Msg)
     | Increase
-      -- | Heartbeat Time
     | NoOp
 
 
@@ -138,31 +128,15 @@ initModel taco =
 
 
         cmd =  (send ChannelJoinToggle)
-        -- cmd = send (ChannelJoinToggle startModel) -- Http.send FetchHNTopStories request
-            -- if taco.chatChannel /= "" then
-                -- Cmd.batch
-                --         [Http.send FetchHNTopStories request
-                --         , (send (JoinChannel startModel)) ]
-            -- else
-            --     Cmd.batch
-            --             [Http.send FetchHNTopStories request
-            --                 ]           
+            
 
         _ = Debug.log "Chat initmodel chatModel : " (toString cmd)
 
     in
-    -- Model "" [] [] flags.username (initPhxSocket flags)
         ( startModel
            ! [cmd]
         )
 
-
-
--- init : ( Flags -> Model, Cmd Msg )
--- init =
---     -- ( initModel, Cmd.none )
---     ( initModel ! [Http.send FetchHNTopStories request ] )
--- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
@@ -199,16 +173,11 @@ chatMessageDecoder =
 
 
 
--- JE.object [ ("username", JE.string "123") ]
-
 
 update : Msg -> Model -> ( Model, Cmd Msg, TacoUpdate )
 update msg model =
     case msg of
-        -- ReceiveMessage str ->
-        --     ( { model | messages = str :: model.messages }
-        --     , Cmd.none
-        --     )
+
         FetchHNTopStories (Ok logs) ->
             ({ model | logs = logs, response = "Alltrans Log>>" } 
             , Cmd.none
@@ -242,11 +211,6 @@ update msg model =
         NoOp ->
             ( model, Cmd.none, NoUpdate )
 
-
-
--- { id, class, classList } =
---     homepageNamespace
--- VIEW
 
 listItem : Log -> Html Msg
 listItem log =
