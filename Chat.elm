@@ -24,16 +24,16 @@ import Material.Color as Color
 import Material.List as Lists
 
 
-type alias User =
-    { name : String
-    }
+-- type alias User =
+--     { name : String
+--     }
 
 
-type alias UserPresence =
-    { online_at : String
-    , device : String
-    , name : String
-    }
+-- type alias UserPresence =
+--     { online_at : String
+--     , device : String
+--     , name : String
+--     }
 
 
 
@@ -44,37 +44,37 @@ send msg =
         |> Task.perform identity
 
 
-logDecoder : JD.Decoder Log
-logDecoder =
-    JD.map2 Log
-        (field "id" JD.string)
-        (field "title" JD.string)
+-- logDecoder : JD.Decoder Log
+-- logDecoder =
+--     JD.map2 Log
+--         (field "id" JD.string)
+--         (field "title" JD.string)
 
 
-hnTopStories : String
-hnTopStories =
-    """\x0D
-    {\x0D
-        logs {\x0D
-          id\x0D
-          text\x0D
-          created_at\x0D
-      }\x0D
-    }\x0D
-    """
+-- hnTopStories : String
+-- hnTopStories =
+--     """\x0D
+--     {\x0D
+--         logs {\x0D
+--           id\x0D
+--           text\x0D
+--           created_at\x0D
+--       }\x0D
+--     }\x0D
+--     """
 
 
-request : Http.Request (List Log)
-request =
-    let
-        encoded =
-            Http.encodeUri hnTopStories
+-- request : Http.Request (List Log)
+-- request =
+--     let
+--         encoded =
+--             Http.encodeUri hnTopStories
 
-        decoder =
-            JD.at [ "data", "logs" ] <|
-                JD.list logDecoder
-    in
-        Http.get ("http://lwvpweact001:4000/graphql?query=" ++ encoded) decoder
+--         decoder =
+--             JD.at [ "data", "logs" ] <|
+--                 JD.list logDecoder
+--     in
+--         Http.get ("http://lwvpweact001:4000/graphql?query=" ++ encoded) decoder
 
 
 
@@ -83,9 +83,8 @@ request =
 
 type Msg
     = 
-     FetchHNTopStories (Result Http.Error (List Log))
-
-    | ChannelJoinToggle
+    --  FetchHNTopStories (Result Http.Error (List Log))
+     ChannelJoinToggle
     | Mdl (Material.Msg Msg)
     | Increase
     | NoOp
@@ -95,7 +94,7 @@ type alias Model =
     { newMessage : String
 
         -- , presence : List String
-    , users : List User
+    -- , users : List User
     , mdl : Material.Model
     , count : Int
     , if_channeljoined : Bool
@@ -108,8 +107,6 @@ type alias Mdl =
     Material.Model
 
 
-
-
 -- This is where the ChatMessage from Phoenix BE comes in through Socket
 
 
@@ -118,7 +115,7 @@ initModel taco =
     let
         startModel = { newMessage = ""
                         -- , presence = []
-                    , users = []
+                    -- , users = []
                     , mdl = Material.model
                     , count = 0
                     , if_channeljoined = False
@@ -149,23 +146,23 @@ subscriptions model =
 -- PHOENIX STUFF
 
 
-type alias ChatMessage =
-    { username : String
-    , body : String
-    , timestamp : String
-    }
+-- type alias ChatMessage =
+--     { username : String
+--     , body : String
+--     , timestamp : String
+--     }
 
 
-chatMessageDecoder : JD.Decoder ChatMessage
-chatMessageDecoder =
-    JD.map3 ChatMessage
-        (JD.oneOf
-            [ (field "username" JD.string)
-            , JD.succeed "anonymous"
-            ]
-        )
-        (field "body" JD.string)
-        (field "timestamp" JD.string)
+-- chatMessageDecoder : JD.Decoder ChatMessage
+-- chatMessageDecoder =
+--     JD.map3 ChatMessage
+--         (JD.oneOf
+--             [ (field "username" JD.string)
+--             , JD.succeed "anonymous"
+--             ]
+--         )
+--         (field "body" JD.string)
+--         (field "timestamp" JD.string)
 
 
 
@@ -178,16 +175,16 @@ update : Msg -> Model -> ( Model, Cmd Msg, TacoUpdate )
 update msg model =
     case msg of
 
-        FetchHNTopStories (Ok logs) ->
-            ({ model | logs = logs, response = "Alltrans Log>>" } 
-            , Cmd.none
-            , NoUpdate
-             )
+        -- FetchHNTopStories (Ok logs) ->
+        --     ({ model | logs = logs, response = "Alltrans Log>>" } 
+        --     , Cmd.none
+        --     , NoUpdate
+        --      )
 
-        FetchHNTopStories (Err res) ->
-            ({ model | response = toString res }
-            , Cmd.none
-            , NoUpdate)
+        -- FetchHNTopStories (Err res) ->
+        --     ({ model | response = toString res }
+        --     , Cmd.none
+        --     , NoUpdate)
 
 
 
@@ -233,70 +230,27 @@ view taco model =
             Lists.ul [ css "margin" "0", css "padding" "0" ] items
     in
         div [ style [ ( "border", "solid" ) ] ]
-            [ --     header []
-              --     [ img [ id ReactiveLogo, src "assets/logo.png" ] []
-              --     , nav []
-              --         navElems
-              --     , span [ id BuyTickets ]
-              --         [ text "BUY TICKETS" ]
-              --     ]
-              -- , div []
-              --     [ img [ src "assets/banner.png" ] [] ]
+            [ 
               div [] [ logList ]
             , h4 [] [ text "Channels:" ]
-              -- , div
-              --     []
-              --     [ Button.render Mdl [ 0 ] model.mdl [ Button.raised, Button.colored, Options.onClick (JoinChannel model) ] [ text "Join channel" ]
-              --     , Button.render Mdl [ 1 ] model.mdl [ Button.raised, Button.colored, Options.onClick LeaveChannel model ] [ text "Leave channel" ]
-              --     ]
+           
             , Toggles.switch Mdl [ 0 ] model.mdl [ Options.onToggle (ChannelJoinToggle), Toggles.ripple, Toggles.value model.if_channeljoined ] [ text "Join" ]
-              --model.if_channeljoined
-              -- [ button [ onClick (JoinChannel model) ] [ text "Join channel" ]
-              -- , button [ onClick LeaveChannel ] [ text "Leave channel" ]
-              -- ]
-            --, channelsTable (Dict.values model.phxSocket.channels)
-          
+             
             , br [] []
-            , div [] [ h4 [] [ text "Presence users:" ] ]
-            , ul [] ((List.reverse << List.map renderUser) model.users)
+            -- , div [] [ h4 [] [ text "Presence users:" ] ]
+            -- , ul [] ((List.reverse << List.map renderUser) model.users)
             , br [] []
             
             , h4 [] [ text "Message:" ]
-            -- , newMessageForm model
-          
-              -- , div [] [ chatInterfaceView model]
+         
             ]
             |> Material.Scheme.top
-
-
-
-
--- newMessageForm : Model -> Html Msg
--- newMessageForm model =
---     form [ onSubmit SendMessage ]
---         [ input [ style [ ( "width", "50%" ) ], type_ "text", value model.newMessage, onInput SetNewMessage, placeholder "Type your message" ] []
---         ]
 
 
 renderMessage : String -> Html Msg
 renderMessage str =
     li [] [ text str ]
 
-
-renderUser : User -> Html Msg
-renderUser user =
-    -- li [] [ text user.name ]
-    -- li []
-    --     [
-    Chip.span []
-        [ Chip.contact Html.span
-            [ Color.background Color.primary
-            , Color.text Color.white
-            ]
-            [ text (user.name |> String.toUpper |> String.slice 0 1) ]
-        , Chip.content []
-            [ text user.name ]
-        ]
 
 
 
