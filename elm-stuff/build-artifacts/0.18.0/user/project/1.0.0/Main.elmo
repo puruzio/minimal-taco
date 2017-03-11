@@ -14,7 +14,7 @@ var _user$project$Main$updateTaco = F2(
 				return taco;
 		}
 	});
-var _user$project$Main$hnTopStories = '\n    {\n      hn {\n        topStories {\n          id\n        }\n      }\n    }\n    ';
+var _user$project$Main$hnTopStories = '\n    {\n      hn {\n        topStories {\n          id\n          title: id\n        }\n      }\n    }\n    ';
 var _user$project$Main$logDecoder = A3(
 	_elm_lang$core$Json_Decode$map2,
 	_user$project$Types$Log,
@@ -87,8 +87,8 @@ var _user$project$Main$updateRouter = F2(
 			return _elm_lang$core$Native_Utils.crashCase(
 				'Main',
 				{
-					start: {line: 257, column: 5},
-					end: {line: 271, column: 115}
+					start: {line: 258, column: 5},
+					end: {line: 272, column: 115}
 				},
 				_p2)('Ooops. We got a sub-component message even though it wasn\'t supposed to be initialized??');
 		}
@@ -101,8 +101,8 @@ var _user$project$Main$updateLogData = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'Main',
 					{
-						start: {line: 275, column: 5},
-						end: {line: 305, column: 32}
+						start: {line: 276, column: 5},
+						end: {line: 306, column: 32}
 					},
 					_p5)('OMG CANT EVEN DOWNLOAD.');
 			case 'Success':

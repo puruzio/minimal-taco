@@ -119,6 +119,7 @@ hnTopStories =
       hn {
         topStories {
           id
+          title: id
         }
       }
     }
